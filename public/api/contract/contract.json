@@ -1,0 +1,39 @@
+{
+  "success": true,
+  "code": 200,
+  "message": "Get list contract successfully",
+  "data": {
+    "items": [{
+      "id": 1,
+      "user": "hainm",
+      "startAt": "2021-03-15",
+      "code": "INTERN-01",
+      "note": "Hai Nguyen Minh from UTC"
+    }, {
+      "id": 2,
+      "user": "anhnt",
+      "startAt": "2021-03-01",
+      "code": "INTERN-02",
+      "note": "Nguyen Tien Anh from HUST"
+    }, {
+      "id": 3,
+      "user": "tuantq",
+      "startAt": "2021-03-01",
+      "code": "INTERN-03",
+      "note": "Tran Quang Tuan from ACT"
+    }, {
+      "id": 4,
+      "user": "khoacdd",
+      "startAt": "2021-03-01",
+      "code": "INTERN-04",
+      "note": "Cu Duc Dang Khoa from HUST"
+    }, {
+      "id": 5,
+      "user": "lamlv",
+      "startAt": "2021-05-01",
+      "code": "INTERN-05",
+      "note": "Le Vu Lam from HUST"
+    }],
+    "totalItems": 5
+  }
+}

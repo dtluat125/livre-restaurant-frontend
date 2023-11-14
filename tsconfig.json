@@ -1,0 +1,34 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "strict": true,
+        "jsx": "preserve",
+        "importHelpers": true,
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "baseUrl": ".",
+        "types": ["webpack-env"],
+        "paths": {
+            "@/*": ["src/*"],
+            "@common/*": ["src/common/*"],
+            "@auth/*": ["src/modules/auth/*"],
+            "@billing/*": ["src/modules/billing/*"],
+            "@asset/*": ["src/modules/asset/*"],
+            "@event/*": ["src/modules/event/*"],
+            "@contract/*": ["src/modules/contract/*"],
+            "@recruitment/*": ["src/modules/recruitment/*"],
+            "@user/*": ["src/modules/user/*"],
+            "@timekeeping/*": ["src/modules/timekeeping/*"],
+            "@request-absence/*": ["src/modules/request-absence/*"]
+        },
+        "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
+    "exclude": ["node_modules"]
+}

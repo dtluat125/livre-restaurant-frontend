@@ -1,0 +1,45 @@
+{
+  "success": true,
+  "code": 200,
+  "message": "Get list role successfully",
+  "data": {
+    "totalItems": 3,
+    "items": [{
+      "id": 1,
+      "nameEn": "admin",
+      "nameVi": "quản trị viên",
+      "description": "This is admin role",
+      "permissions": [{
+        "model": "user",
+        "actions": ["read", "create", "update", "change status"]
+      }, {
+        "model": "role",
+        "actions": ["read", "update"]
+      }]
+    }, {
+      "id": 2,
+      "nameEn": "member",
+      "nameVi": "thành viên",
+      "description": "This is member role",
+      "permissions": [{
+        "model": "user",
+        "actions": ["read"]
+      }, {
+        "model": "role",
+        "actions": ["read"]
+      }]
+    }, {
+      "id": 3,
+      "nameEn": "supervisor",
+      "nameVi": "giám sát viên",
+      "description": "This is supervisor role",
+      "permissions": [{
+        "model": "user",
+        "actions": ["read", "create", "update", "delete", "change status"]
+      }, {
+        "model": "role",
+        "actions": ["read", "update"]
+      }]
+    }]
+  }
+}

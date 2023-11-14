@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "code": 200,
+  "message": "Get list user successfully",
+  "data": {
+    "items": [
+      "hainm",
+      "anhtn",
+      "tuantq",
+      "khoacdd",
+      "trungtd",
+      "lamlv",
+      "hieuvt",
+      "datnd"
+    ],
+    "totalItems": 8
+  }
+}

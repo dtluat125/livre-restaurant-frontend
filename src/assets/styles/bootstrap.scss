@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,800;1,400;1,500;1,600;1,800&display=swap');
+
+/*-----------------
+    1. General
+-----------------------*/
+* {
+    font-family: 'Montserrat', sans-serif;
+}
+html {
+    height: 100%;
+}
+.main-wrapper {
+    font-size: 14px;
+    color: #212121;
+    background-color: $--color-gray-100;
+    min-height: 100%;
+    overflow-x: hidden;
+    /* width */
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px grey;
+        border-radius: 10px;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+        background: rgb(180, 179, 179);
+        border-radius: 10px;
+    }
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Montserrat';
+    margin-top: 0;
+    font-weight: 500;
+}
+h1,
+.h1 {
+    font-size: 2.25rem;
+}
+h2,
+.h2 {
+    font-size: 1.875rem;
+}
+h3,
+.h3 {
+    font-size: 1.5rem;
+}
+h4,
+.h4 {
+    font-size: 1.125rem;
+}
+h5,
+.h5 {
+    font-size: 0.875rem;
+}
+h6,
+.h6 {
+    font-size: 0.75rem;
+}
+
+a,
+a:hover,
+a:active,
+a:focus {
+    color: #212121;
+    text-decoration: none;
+    outline: none;
+}
+
+.text-primary {
+    color: $--color-primary !important;
+}
+
+.text-secondary {
+    color: $--color-text-secondary !important;
+}
+
+.text-success {
+    color: $--color-success !important;
+}
+
+.text-danger {
+    color: $--color-danger !important;
+}
+
+.text-warning {
+    color: $--color-warning !important;
+}
+
+.text-info {
+    color: $--color-info !important;
+}

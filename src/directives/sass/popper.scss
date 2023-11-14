@@ -1,0 +1,137 @@
+.popper {
+    width: auto;
+    background: #333333;
+    color: white;
+    font-weight: bold;
+    padding: 18px;
+    border-radius: 4px;
+    display: none;
+    max-width: 400px;
+}
+
+.popover-content {
+    word-break: break-all;
+}
+
+.popper[data-show] {
+    display: block;
+}
+
+.popper__arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+    margin: 5px;
+    border-color: #333333;
+    z-index: 1;
+}
+
+.popper[data-popper-placement^='top'] > .popper__arrow {
+    border-width: 5px 5px 0 5px;
+    border-left-color: transparent !important;
+    border-right-color: transparent !important;
+    border-bottom-color: transparent !important;
+    bottom: -5px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.popper[data-popper-placement^='bottom'] > .popper__arrow {
+    border-width: 0 5px 5px 5px;
+    border-left-color: transparent !important;
+    border-right-color: transparent !important;
+    border-top-color: transparent !important;
+    top: -5px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.popper[data-popper-placement^='left'] > .popper__arrow {
+    border-width: 5px 0 5px 5px;
+    border-top-color: transparent !important;
+    border-right-color: transparent !important;
+    border-bottom-color: transparent !important;
+    right: -5px;
+    top: -0.45rem !important;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.popper[data-popper-placement^='right'] > .popper__arrow {
+    border-width: 5px 5px 5px 0;
+    border-left-color: transparent !important;
+    border-top-color: transparent !important;
+    border-bottom-color: transparent !important;
+    left: -5px;
+    top: -0.45rem !important;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.popper[data-popper-reference-hidden] {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+// style work log error tooltip
+.work-log-error-tooltip {
+    background: #fff;
+    color: #ea4f43;
+    border: 1px solid #ea4f43;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 12px 9px 12px;
+
+    .popover-content {
+        white-space: pre-line;
+    }
+
+    .work-log_popper__arrow {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background: #fff;
+        border: 0.0625rem solid #ea4f43;
+        z-index: 1;
+    }
+}
+
+.work-log-head-tooltip {
+    .popover-content {
+        white-space: pre-line;
+    }
+}
+
+.work-log-error-tooltip[data-popper-placement^='left'] > .work-log_popper__arrow {
+    transform: rotate(45deg) !important;
+    top: 25px !important;
+    right: -7px;
+    border-left-color: transparent;
+    border-bottom-color: transparent;
+    height: 14px;
+    width: 14px;
+}
+
+.work-log-error-tooltip[data-popper-placement^='right'] > .work-log_popper__arrow {
+    transform: rotate(45deg) !important;
+    top: 15px !important;
+    left: -8px;
+    border-right-color: transparent !important;
+    border-top-color: transparent !important;
+}
+
+.work-log-head-tooltip {
+    padding: 12px;
+    max-width: 260px;
+}
+
+.work-log-head-tooltip[data-popper-placement^='top'] > .popper__arrow {
+    border-width: 1.3125rem 10px 0 10px;
+    border-left-color: transparent !important;
+    border-right-color: transparent !important;
+    border-bottom-color: transparent !important;
+    bottom: -21px;
+    margin-top: 0;
+    margin-bottom: 0;
+}

@@ -1,0 +1,133 @@
+@import '../../../../assets/styles/variables';
+
+.el-button {
+    border-color: $--border-color-base;
+    border-radius: 8px;
+
+    &:hover {
+        background-color: $--color-white;
+        border-color: $--border-color-base;
+        color: $--color-text-regular;
+    }
+
+    &:focus {
+        background-color: $--color-white;
+        border-color: $--border-color-base;
+        color: $--color-text-regular;
+    }
+
+    &--default {
+        background-color: $--color-white;
+        border-color: $--border-color-base;
+        &.is-plain,
+        &.is-plain:focus {
+            color: $--color-text-regular;
+            background: $--color-white;
+            border-color: $--border-color-base;
+        }
+        &:hover,
+        &:focus,
+        &.is-plain:hover {
+            background-color: $--color-white;
+            border-color: $--border-color-base;
+            color: $--color-text-regular;
+        }
+
+        &:hover,
+        &.is-plain:hover {
+            border-color: $--color-primary;
+        }
+    }
+    &--success {
+        background-color: $--color-success;
+        border-color: $--color-success;
+        &.is-plain,
+        &.is-plain:focus {
+            color: $--color-success;
+            background: $--color-white;
+            border-color: $--color-success;
+        }
+        &:hover,
+        &:focus,
+        &.is-plain:hover {
+            background-color: $--color-success;
+            border-color: $--color-success;
+            color: $--color-white;
+        }
+    }
+    &--warning {
+        background-color: $--color-warning;
+        border-color: $--color-warning;
+        &.is-plain,
+        &.is-plain:focus {
+            color: $--color-warning;
+            background: $--color-white;
+            border-color: $--color-warning;
+        }
+        &:hover,
+        &:focus,
+        &.is-plain:hover {
+            background-color: $--color-warning;
+            border-color: $--color-warning;
+            color: $--color-white;
+        }
+    }
+    &--danger,
+    &--error {
+        background-color: $--color-danger;
+        border-color: $--color-danger;
+        &.is-plain,
+        &.is-plain:focus {
+            color: $--color-danger;
+            background: $--color-white;
+            border-color: $--color-danger;
+        }
+        &:hover,
+        &:focus,
+        &.is-plain:hover {
+            background-color: $--color-danger;
+            border-color: $--color-danger;
+            color: $--color-white;
+        }
+    }
+    &--primary {
+        background-color: $--color-primary;
+        border-color: $--color-primary;
+        &.is-plain,
+        &.is-plain:focus {
+            color: $--color-primary;
+            background: $--color-white;
+            border-color: $--color-primary;
+        }
+        &:hover,
+        &:focus,
+        &.is-plain:hover {
+            background-color: $--color-primary;
+            border-color: $--color-primary;
+            color: $--color-white;
+        }
+    }
+    &--info {
+        background-color: $--color-info;
+        border-color: $--color-info;
+        &.is-plain,
+        &.is-plain:focus {
+            color: $--color-info;
+            background: $--color-white;
+            border-color: $--color-info;
+        }
+        &:hover,
+        &:focus,
+        &.is-plain:hover {
+            background-color: $--color-info;
+            border-color: $--color-info;
+            color: $--color-white;
+        }
+    }
+}
+
+.el-picker-panel__footer {
+    .el-button {
+        padding: 10px !important;
+    }
+}

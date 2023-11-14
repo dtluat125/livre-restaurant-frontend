@@ -1,0 +1,52 @@
+// Color
+$--color-gray-100: #fafafa;
+$--color-gray-200: #f5f5f5;
+
+$--color-primary: #409eff;
+$--color-success: #67c23a;
+$--color-warning: #e6a23c;
+$--color-danger: #f56c6c;
+$--color-info: #909399;
+$--color-white: #ffffff;
+$--color-default: #ffffff;
+
+$--color-text-primary: #303133;
+$--color-text-regular: #606266;
+$--color-text-secondary: #909399;
+$--color-text-placeholder: #757575;
+$--border-color-base: #dcdfe6;
+$--border-color-light: #e4e7ed;
+$--border-color-lighter: #e0e0e0;
+$--border-color-extra-light: #f2f6fc;
+$--color-blue-light: #e6f6ff;
+$--table-header-bg-color: #f5f5f5;
+$--table-header-text-color: black;
+$color-status-active: #409eff;
+$color-status-inactive: #dddddd;
+$color-status-waiting-for-approval: #e5e85b;
+
+$candidate-cancel: #c70812;
+
+$candidate-done: rgb(25, 135, 84);
+$candidate-waiting: #fccf0a;
+
+$--opacity-hover-button: 0.8;
+
+$zIndex: (
+    zIndexBase: 1,
+    fileUploadInput: 5,
+    headerLeft: 5,
+    dateNavigator: 7,
+    cpHeader: 20,
+    baseCustomFilterForm: 21,
+    loginInner: 30,
+    elButton: 50,
+    popoverCalendar: 70,
+    totalPage: 100,
+    mobileBtn: 200,
+    userMenu: 400,
+    tableHeader: 600,
+    inputArea: 800,
+    sideBar: 1000,
+    header: 2000,
+);
