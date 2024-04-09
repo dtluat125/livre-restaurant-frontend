@@ -1,18 +1,14 @@
 @use 'sass:map';
 
 // CSS3 var
-@use 'common/var' as *;
-@use 'mixins/var' as *;
-
-// for better performance do not dynamically change the root variable if you really
-// do not need that, since this could introduce recalculation overhead for rendering.
-// https://lisilinhart.info/posts/css-variables-performance/
+@use '~element-plus/theme-chalk/src/common/var' as *;
+@use './mixins/var' as *;
 
 :root {
     --el-color-white: #{$color-white};
     --el-color-black: #{$color-black};
 
-    --el-color-primary: #{$color-primary};
+    --el-color-primary: #8f68fb;
 
     @for $i from 1 through 9 {
         @include set-css-color-type-light('primary', $i);
@@ -25,14 +21,14 @@
     }
 
     // Background
-    --el-bg-color-base: #{$background-color-base};
+    // --el-bg-color-base: #{$bg-color};
 
     // Border
-    --el-border-width-base: #{$border-width-base};
-    --el-border-style-base: #{$border-style-base};
-    --el-border-color-hover: #{$border-color-hover};
-    --el-border-base: var(--el-border-width-base) var(--el-border-style-base)
-        var(--el-border-color-base);
+    // --el-border-width-base: #{$border-width-base};
+    // --el-border-style-base: #{$border-style-base};
+    // --el-border-color-hover: #{$border-color-hover};
+    // --el-border-base: var(--el-border-width-base) var(--el-border-style-base)
+    //     var(--el-border-color-base);
 
     // Svg
     --el-svg-monochrome-grey: #dcdde0;

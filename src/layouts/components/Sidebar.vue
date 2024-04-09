@@ -15,7 +15,7 @@
                     <img
                         class="logo-image"
                         :class="openSidebar ? 'logo-center' : 'logo-left'"
-                        src="@/assets/images/logo/logo-horizontal.svg"
+                        src="@/assets/images/logo/logo-horizontal.png"
                         height="40"
                         alt=""
                     />

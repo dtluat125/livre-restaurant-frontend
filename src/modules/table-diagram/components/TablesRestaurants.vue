@@ -168,29 +168,25 @@ export default class TablesRestaurants extends Vue {
 
 <style lang="scss" scoped>
 .table-item {
-    width: 15%;
-    margin: 15px;
+    width: 100%;
     padding: 10px;
     cursor: pointer;
     border-radius: 10px;
     position: relative;
     .table-img {
-        width: 50px;
-        height: 50px;
+        width: 30px;
+        height: 30px;
+        user-select: none;
     }
     .table-description {
         margin: 5px 0px;
         color: #000000;
         font-weight: 200;
     }
-    &:hover {
-        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-        .table-description {
-            font-weight: 700;
-        }
-    }
+
     .table-layout {
         padding: 10px;
+        pointer-events: none;
     }
 
     .table-action {

@@ -140,7 +140,7 @@ export default class RoleList extends Vue {
     height: 22px !important;
     background: transparent;
     border: 0px;
-    color: #2396d9 !important;
+    color: var(--el-color-primary) !important;
     .el-icon {
         font-size: 18px !important;
     }
@@ -150,7 +150,7 @@ export default class RoleList extends Vue {
     }
     &:focus {
         background: transparent !important;
-        color: #2396d9 !important;
+        color: var(--el-color-primary) !important;
     }
 }
 .card-header {

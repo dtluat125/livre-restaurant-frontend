@@ -1,6 +1,6 @@
 @use 'sass:map';
 
-@use '../common/var' as *;
+@use '~element-plus/theme-chalk/src/common/var' as *;
 
 @mixin set-css-color-type-light($type, $i) {
     --el-color-#{$type}-light-#{$i}: #{map.get($colors, $type, 'light-#{$i}')};

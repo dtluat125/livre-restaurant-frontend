@@ -171,7 +171,7 @@ export default class RoleForm extends mixins(UtilMixins) {
 :deep(.el-checkbox) {
     .is-checked {
         .el-checkbox__inner {
-            background-color: #2396d9;
+            background-color: var(--el-color-primary);
         }
     }
 }

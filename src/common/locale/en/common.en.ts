@@ -104,6 +104,12 @@ export default {
         create: 'Create',
     },
 
+    button: {
+        save: 'Save',
+        edit: 'Edit',
+        cancel: 'Cancel',
+    },
+
     breadcrumb: {
         home: 'Home',
         dashboard: 'Dashboard',

@@ -7,7 +7,7 @@
                     <img
                         class="m-auto d-block"
                         height="100"
-                        src="@/assets/images/logo/logo-horizontal.svg"
+                        src="@/assets/images/logo/logo-horizontal.png"
                     />
                     <h3 class="mt-5" style="font-weight: 600">
                         Login with your Google Account
@@ -60,7 +60,7 @@ export default class LoginPage extends Vue {
 <style lang="scss" scoped>
 .login-page {
     background-color: #f5f5f5;
-    background-image: url('~@/assets/images/login-bg.jpg');
+    background-image: url('~@/assets/images/login-bg.png');
     height: 100vh;
     display: flex;
     flex-direction: column;

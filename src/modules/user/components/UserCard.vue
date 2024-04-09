@@ -133,7 +133,7 @@ export default class UserCard extends Vue {
 
     get getNamePosition(): string {
         const currentLanguage = appModule.selectedLanguage as SupportLanguage;
-        const position = userModule.userPositionList.find(
+        const position = userModule.userPositionList?.find(
             (position) => position.code === this.user.position,
         );
         return position ? position.value?.[currentLanguage] : '';

@@ -92,6 +92,7 @@ class MenuModule extends VuexModule {
 
     @Mutation
     MUTATE_FOOD_LIST(data: Array<IFood>) {
+        console.log(data);
         this.foodList = data;
     }
 

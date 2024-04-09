@@ -7,6 +7,8 @@ export interface ITable {
     status: string;
     numberSeat: number;
     floor: FloorRestaurant;
+    coordinateX: number;
+    coordinateY: number;
 }
 
 export interface IGetTables {

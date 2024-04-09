@@ -125,7 +125,7 @@ const reportRevenueMenu: ISidebar = {
         `${PermissionResources.REPORT_REVENUE}_${PermissionActions.DELETE}`,
     ],
 };
-
+// TODO: Remove later
 export const sidebars = [
     dashboard,
     userMenu,

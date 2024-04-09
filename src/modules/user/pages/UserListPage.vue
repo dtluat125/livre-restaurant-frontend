@@ -4,7 +4,7 @@
     </div>
     <div class="content-wrapper">
         <BaseEmptyBox
-            v-if="totalItems === 0 && !loading"
+            v-if="(totalItems === 0 && !loading) || !users"
             styleContainer="style-empty"
             :message="$t('user.list.filterForm.emptyMessage')"
         />
@@ -27,7 +27,7 @@ import { DEFAULT_FIRST_PAGE, DEFAULT_SIZE_PER_PAGE } from '@/common/constants';
 import { mixins } from 'vue-property-decorator';
 import { PermissionActions, PermissionResources } from '@/modules/role/constants';
 import { checkUserHasPermission } from '@/utils/helper';
-import { IUserPosition } from '../types';
+import { IUser, IUserPosition } from '../types';
 import { generalSettingApiService } from '../services/api.service';
 import { SettingKey } from '../constants';
 @Options({
@@ -49,6 +49,10 @@ export default class UserListPage extends mixins(UtilMixins) {
 
     get totalItems(): number {
         return userModule.totalUsers;
+    }
+
+    get users(): IUser[] {
+        return userModule.users;
     }
 
     get pageLimit(): number {

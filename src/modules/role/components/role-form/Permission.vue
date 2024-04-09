@@ -49,7 +49,11 @@ import compact from 'lodash/compact';
 import remove from 'lodash/remove';
 import { Vue } from 'vue-class-component';
 import { Model, Prop, Watch } from 'vue-property-decorator';
-import { PermissionActions, personalPermissionSuffix } from '../../constants';
+import {
+    PermissionActions,
+    personalPermissionSuffix,
+    PermissionResources,
+} from '../../constants';
 import { roleModule } from '../../store';
 import {
     IPermission,
@@ -113,7 +117,17 @@ export default class Permission extends Vue {
                     resource: permission.resource,
                 });
             });
-            permissions.push(temp);
+            // TODO: remove later
+            if (
+                [
+                    PermissionResources.USER,
+                    PermissionResources.TABLE_DIAGRAM,
+                    PermissionResources.MENU_FOOD,
+                    PermissionResources.MENU_CATEGORY,
+                    PermissionResources.ROLE,
+                ].includes(temp.resource!)
+            )
+                permissions.push(temp);
         });
         return permissions;
     }

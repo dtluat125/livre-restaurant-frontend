@@ -22,7 +22,7 @@
                 <template #default="scope">
                     <div class="d-flex">
                         <BaseAvatar
-                            :imageUrl="scope.row.foodImg.url"
+                            :imageUrl="scope.row.foodImg?.url"
                             :height="25"
                             :width="25"
                         />
@@ -60,7 +60,7 @@
                             effect="dark"
                             :content="$t('common.app.tooltip.edit')"
                             placement="top"
-                            v-if="isCanUpdate(scope.row?.status)"
+                            v-if="isCanUpdate()"
                         >
                             <el-button
                                 type="warning"
@@ -74,7 +74,7 @@
                             effect="dark"
                             :content="$t('common.app.tooltip.delete')"
                             placement="top"
-                            v-if="isCanDelete(scope.row?.status)"
+                            v-if="isCanDelete()"
                         >
                             <el-button
                                 type="danger"

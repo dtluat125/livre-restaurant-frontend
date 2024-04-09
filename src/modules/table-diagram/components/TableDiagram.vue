@@ -42,13 +42,15 @@
                             src="../../../assets/icons/table-diagram/window-icon.svg"
                         />
                     </div>
-                    <div class="p-10 list-table">
+                    <!-- <div class="p-10 list-table">
                         <TablesRestaurants
                             v-for="(table, index) in tableList"
                             :key="index"
                             :table="table"
                         />
-                    </div>
+                    </div> -->
+                    <FloorPlan :tables="tableList" />
+
                     <div class="p-1 d-flex flex-column justify-content-around">
                         <img
                             class="decorations"
@@ -110,13 +112,15 @@
                             src="../../../assets/icons/table-diagram/window-icon.svg"
                         />
                     </div>
-                    <div class="p-10 list-table">
+                    <!-- <div class="p-10 floor-wrapper">
                         <TablesRestaurants
                             v-for="(table, index) in tableList"
                             :key="index"
                             :table="table"
                         />
-                    </div>
+                    </div> -->
+                    <FloorPlan :tables="tableList" />
+
                     <div class="p-1 d-flex flex-column justify-content-around">
                         <img
                             class="decorations"
@@ -182,13 +186,15 @@
                             src="../../../assets/icons/table-diagram/plant-2.svg"
                         />
                     </div>
-                    <div class="p-10 list-table">
+                    <!-- <div class="p-10 floor-wrapper">
                         <TablesRestaurants
                             v-for="(table, index) in tableList"
                             :key="index"
                             :table="table"
                         />
-                    </div>
+                    </div> -->
+                    <FloorPlan :tables="tableList" />
+
                     <div class="p-1 d-flex flex-column justify-content-around">
                         <img
                             class="decorations"
@@ -243,12 +249,14 @@ import { TableMixins } from '../mixins';
 import { tableDiagramModule } from '../store';
 import { ITable } from '../types';
 import BookingListOfTablePopup from './BookingListOfTablePopup.vue';
+import FloorPlan from './floor-plan/Floor.vue';
 
 @Options({
     name: 'table-diagram-component',
     components: {
         TablesRestaurants,
         BookingListOfTablePopup,
+        FloorPlan,
     },
 })
 export default class TableDiagramPage extends mixins(TableMixins) {
@@ -365,6 +373,14 @@ export default class TableDiagramPage extends mixins(TableMixins) {
     flex-wrap: wrap;
     justify-content: space-between;
     background-color: #e9e9e9;
+    border: 1px solid #b3b3b3;
+    border-radius: 10px;
+}
+
+.floor-wrapper {
+    width: 100%;
+    margin: 50px;
+    background-color: white;
     border: 1px solid #b3b3b3;
     border-radius: 10px;
 }

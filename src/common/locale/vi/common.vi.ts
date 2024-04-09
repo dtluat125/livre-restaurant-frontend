@@ -98,6 +98,12 @@ export default {
         numberPeople: 'Số người',
     },
 
+    button: {
+        save: 'Lưu',
+        edit: 'Chỉnh sửa',
+        cancel: 'Hủy',
+    },
+
     breadcrumb: {
         home: 'Trang chủ',
         dashboard: 'Thống kê',
