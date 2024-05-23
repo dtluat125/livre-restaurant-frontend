@@ -14,11 +14,7 @@
                 min-width="150"
             >
                 <template #default="scope">
-                    {{
-                        scope.row.createdAt
-                            ? parseDateTime(scope.row.date, YYYY_MM_DD_HYPHEN)
-                            : ''
-                    }}
+                    {{ scope.row.createdAt ? parseDateTime(scope.row.date) : '' }}
                 </template>
             </el-table-column>
             <el-table-column
@@ -220,12 +216,6 @@ export default class ReportRevenueTable extends mixins(UtilMixins) {
     }
 
     get isCanApproveStatus(): boolean {
-        console.log(
-            checkUserHasPermission(reportRevenueModule.userPermissions, [
-                `${PermissionResources.REPORT_REVENUE}_${PermissionActions.APPROVE_STATUS}`,
-            ]),
-        );
-
         return checkUserHasPermission(reportRevenueModule.userPermissions, [
             `${PermissionResources.REPORT_REVENUE}_${PermissionActions.APPROVE_STATUS}`,
         ]);

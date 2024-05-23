@@ -9,6 +9,12 @@ const dashboard: ISidebar = {
     active: true,
     to: '/dashboard',
     pageName: PageName.DASHBOARD_PAGE,
+    requiredPermissions: [
+        `${PermissionResources.DASHBOARD}_${PermissionActions.READ}`,
+        `${PermissionResources.DASHBOARD}_${PermissionActions.CREATE}`,
+        `${PermissionResources.DASHBOARD}_${PermissionActions.UPDATE}`,
+        `${PermissionResources.DASHBOARD}_${PermissionActions.DELETE}`,
+    ],
 };
 // end dashboardGroup
 

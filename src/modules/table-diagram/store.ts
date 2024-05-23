@@ -101,6 +101,7 @@ class TableDiagramModule extends VuexModule {
               })) as IBodyResponse<IGetListResponse<ITable>>);
         if (response.success) {
             this.MUTATE_TABLES_RESTAURANTS(response?.data?.items || []);
+            console.log(response.data?.items);
         } else {
             this.MUTATE_TABLES_RESTAURANTS([]);
         }

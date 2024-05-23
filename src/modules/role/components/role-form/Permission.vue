@@ -120,11 +120,15 @@ export default class Permission extends Vue {
             // TODO: remove later
             if (
                 [
+                    PermissionResources.DASHBOARD,
                     PermissionResources.USER,
                     PermissionResources.TABLE_DIAGRAM,
                     PermissionResources.MENU_FOOD,
                     PermissionResources.MENU_CATEGORY,
                     PermissionResources.ROLE,
+                    PermissionResources.BOOKING,
+                    PermissionResources.BILLING,
+                    PermissionResources.REPORT_REVENUE,
                 ].includes(temp.resource!)
             )
                 permissions.push(temp);

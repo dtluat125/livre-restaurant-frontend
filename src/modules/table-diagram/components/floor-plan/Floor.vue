@@ -1,24 +1,26 @@
 <script setup lang="ts">
-import { UseDraggable as Draggable } from '@vueuse/components';
-import { useElementBounding, clamp, useDraggable } from '@vueuse/core';
-import { isClient } from '@vueuse/shared';
-import { ref, toRefs, computed, unref, watchEffect } from 'vue';
-import DraggableTableItem from './DraggableTableItem.vue';
-import { ITable } from '@/modules/table-diagram/types';
 import { tableService } from '@/modules/booking/services/api.service';
-import { ElLoading } from 'element-plus';
 import { tableDiagramModule } from '@/modules/table-diagram/store';
+import { ITable } from '@/modules/table-diagram/types';
 import {
     showErrorNotificationFunction,
     showSuccessNotificationFunction,
 } from '@/utils/helper';
+import { ElLoading } from 'element-plus';
+import { ref, toRefs, watch } from 'vue';
+import DraggableTableItem from './DraggableTableItem.vue';
+import { bookingModule } from '../../../booking/store';
 
 interface Props {
     tables: ITable[];
 }
 
-const props = withDefaults(defineProps<Props>(), {
-    tables: [],
+const props = defineProps<Props>();
+
+const { tables } = toRefs(props);
+watch(tables, (newTables) => {
+    console.log('newTables', newTables);
+    updatedTables.value = newTables || [];
 });
 const isEditingFloorPlan = ref(false);
 const onClickButtonEdit = () => {
@@ -27,12 +29,7 @@ const onClickButtonEdit = () => {
 const onClickButtonCancel = () => {
     isEditingFloorPlan.value = false;
 };
-const { tables } = toRefs(props);
-const updatedTables = ref(tables.value);
-
-watchEffect(() => {
-    updatedTables.value = tables.value;
-});
+const updatedTables = ref(props.tables || []);
 
 const onDragEnd = (id: number, coordinate: { x: number; y: number }) => {
     console.log(id);
@@ -93,11 +90,13 @@ const onClickButtonSave = async () => {
     }
     isEditingFloorPlan.value = false;
 };
+
+const isBookingFormOpen = bookingModule.isShowBookingFormPopUp;
 </script>
 
 <template>
     <div class="floor-plan">
-        <div class="button-group">
+        <div class="button-group" v-if="!isBookingFormOpen">
             <el-button
                 v-if="!isEditingFloorPlan"
                 type="primary"

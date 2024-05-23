@@ -120,6 +120,7 @@ class AuthModule extends VuexModule {
         } else {
             this.MUTATE_USER_PROFILE({ ...initUser });
         }
+        appService.setUser(profile?.data);
         return profile;
     }
 

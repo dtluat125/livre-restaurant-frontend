@@ -127,6 +127,13 @@ export default class ProfileInfo extends Vue {
         const position = authModule.userPositionList?.find(
             (position) => position.code === this.userProfile?.position,
         );
+        console.log(
+            'currentLanguage',
+            currentLanguage,
+            'position',
+            position,
+            authModule.userPositionList,
+        );
         return position ? position.value?.[currentLanguage] : '';
     }
 

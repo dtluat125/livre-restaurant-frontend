@@ -1,5 +1,10 @@
 <template>
-    <div class="table-item" :class="table.id === tableSelected?.id ? 'selected' : ''">
+    <div
+        class="table-item"
+        :class="table.id === tableSelected?.id ? 'selected' : ''"
+        @click="selectTable"
+        ref="draggable"
+    >
         <div
             class="table-action"
             v-if="table?.bookingCount && !isGuestPage"
@@ -16,7 +21,9 @@
                 class="table-layout"
                 @click="selectTable"
                 :class="
-                    table.numberSeat < selectedBooking?.numberPeople ? 'not-enough' : ''
+                    table.numberSeat < (selectedBooking?.numberPeople || 0)
+                        ? 'not-enough'
+                        : ''
                 "
             >
                 <div class="table-description">{{ table.name }}</div>
@@ -65,114 +72,94 @@
     </div>
 </template>
 
-<script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-import { tableDiagramModule } from '../store';
-import { ElLoading } from 'element-plus';
-import { TableStatus } from '../constants';
-import { Prop } from 'vue-property-decorator';
-import { bookingModule } from '@/modules/booking/store';
-import { ITable } from '../types';
-import { IBookingUpdate } from '@/modules/booking/types';
+<script setup lang="ts">
 import { tableService } from '@/modules/booking/services/api.service';
+import { bookingModule } from '@/modules/booking/store';
+import { ITable } from '@/modules/table-diagram/types';
+import { appModule } from '@/store/app';
 import {
     showErrorNotificationFunction,
     showSuccessNotificationFunction,
 } from '@/utils/helper';
-import { appModule } from '@/store/app';
+import { ElLoading } from 'element-plus';
+import { computed } from 'vue';
+import { TableStatus } from '../constants';
+import { tableDiagramModule } from '../store';
 
-@Options({
-    name: 'table',
-    components: {},
-})
-export default class TablesRestaurants extends Vue {
-    @Prop({}) table!: ITable;
+const props = defineProps<{ table: ITable }>();
 
-    TableStatus = TableStatus;
+const isTableDisabled = computed(
+    () => props.table.numberSeat < (selectedBooking.value?.numberPeople || 0),
+);
 
-    get tableSelected(): ITable | null {
-        return tableDiagramModule.tableSelected;
+const tableSelected = computed(() => tableDiagramModule.tableSelected);
+const isShowSetupTableOfBookingPopup = computed(
+    () => bookingModule.isShowSetupTableOfBookingPopup,
+);
+const isShowBookingFormPopUp = computed(() => bookingModule.isShowBookingFormPopUp);
+const selectedBooking = computed(() => bookingModule.selectedBooking);
+const isGuestPage = computed(() => appModule.isGuestPage);
+
+const getImgLink = (numberSeat: number): string => {
+    switch (numberSeat) {
+        case 1:
+            return 'one';
+        case 2:
+            return 'two';
+        case 4:
+            return 'four';
+        case 6:
+            return 'six';
+        case 8:
+            return 'eight';
+        case 10:
+            return 'ten';
+        default:
+            return 'one';
     }
+};
 
-    get isShowSetupTableOfBookingPopup(): boolean {
-        return bookingModule.isShowSetupTableOfBookingPopup;
-    }
+const selectTable = () => {
+    if (!bookingModule.selectedBooking || isTableDisabled.value) return;
+    tableDiagramModule.setTableSelected(props.table);
+    console.log(props.table);
+};
 
-    get isShowBookingFormPopUp(): boolean {
-        return bookingModule.isShowBookingFormPopUp;
-    }
+const getBookingsOfTable = async () => {
+    const loading = ElLoading.service({
+        target: '.table-detail-booking-table-data',
+    });
+    tableDiagramModule.setIsShowBookingsOfTablePopup(true);
+    await bookingModule.getBookingsOfTable(props.table.id);
+    loading.close();
+};
 
-    get selectedBooking(): IBookingUpdate | null {
-        return bookingModule.selectedBooking;
-    }
-
-    get isGuestPage(): boolean {
-        return appModule.isGuestPage;
-    }
-
-    getImgLink(numberSeat: number): string {
-        switch (numberSeat) {
-            case 1:
-                return 'one';
-            case 2:
-                return 'two';
-            case 4:
-                return 'four';
-            case 6:
-                return 'six';
-            case 8:
-                return 'eight';
-            case 10:
-                return 'ten';
-            default:
-                return 'one';
-        }
-    }
-
-    selectTable(): void {
-        tableDiagramModule.setTableSelected(this.table);
-    }
-
-    async getBookingsOfTable(): Promise<void> {
-        const loading = ElLoading.service({
-            target: '.table-detail-booking-table-data',
-        });
-        tableDiagramModule.setIsShowBookingsOfTablePopup(true);
-        await bookingModule.getBookingsOfTable(this.table.id);
-        loading.close();
-    }
-
-    async updateStatusTable(tableId: number, status: TableStatus): Promise<void> {
+const updateStatusTable = async (tableId: number, status: TableStatus) => {
+    const loading = ElLoading.service({
+        target: '.content',
+    });
+    const response = await tableService.update(tableId, { status });
+    loading.close();
+    if (response.success) {
+        showSuccessNotificationFunction('Thay đổi trạng thái bàn thành công');
+        await tableDiagramModule.getTables();
+    } else {
+        showErrorNotificationFunction(response.message);
         const loading = ElLoading.service({
             target: '.content',
         });
-        const response = await tableService.update(tableId, {
-            status,
-        });
+        await tableDiagramModule.getTables();
         loading.close();
-        if (response.success) {
-            showSuccessNotificationFunction('Thay đổi trạng thái bàn thành công');
-            await tableDiagramModule.getTables();
-            loading.close();
-        } else {
-            showErrorNotificationFunction(response.message);
-            const loading = ElLoading.service({
-                target: '.content',
-            });
-            await tableDiagramModule.getTables();
-            loading.close();
-        }
     }
-}
+};
 </script>
 
 <style lang="scss" scoped>
 .table-item {
-    width: 100%;
     padding: 10px;
     cursor: pointer;
     border-radius: 10px;
-    position: relative;
+    min-width: 100px;
     .table-img {
         width: 30px;
         height: 30px;

@@ -31,7 +31,7 @@ export interface IBilling {
     cashier: IUser;
     paymentTotal: number;
     paymentMethod: PaymentMethod;
-    paymentTime: string;
+    paymentTime: string | Date;
     arrivalTime: string | Date;
     billingStatus: BillingStatus;
     reasonCanceled: ReasonCanceled;

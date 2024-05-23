@@ -37,8 +37,21 @@ export const PaymentMethodOptions = [
 ];
 
 export const validateBillingSchema = yup.object({
-    customerName: yup.string().trim().max(INPUT_TEXT_MAX_LENGTH).label('billingName'),
-    customerPhone: yup.string().trim().matches(REGEX.PHONE_NUMBER).optional(),
+    customerName: yup
+        .string()
+        .trim()
+        .max(INPUT_TEXT_MAX_LENGTH)
+        .label('billingName')
+        .optional(),
+    customerPhone: yup
+        .string()
+        .optional()
+        .nullable()
+        .label('customerPhone')
+        .trim()
+        .matches(REGEX.PHONE_NUMBER, {
+            excludeEmptyString: true,
+        }),
     paymentMethod: yup
         .string()
         .max(INPUT_TEXT_MAX_LENGTH)
@@ -52,7 +65,7 @@ export const validateBillingSchema = yup.object({
         .oneOf(Object.values(BillingStatus))
         .nullable()
         .optional(),
-    paymentTime: yup.string().matches(REGEX.YYYY_MM_DD_HYPHEN_HH_MM_COLON),
+    paymentTime: yup.date().required(),
     cashier: yup.string().trim().max(INPUT_TEXT_MAX_LENGTH).label('cashier'),
     note: yup
         .string()

@@ -9,7 +9,7 @@
         <template #title>
             <h3 class="text-left">
                 {{
-                    selectedBilling.billingStatus === BillingStatus.PAID
+                    selectedBilling?.billingStatus === BillingStatus.PAID
                         ? $t('billing.billing.detailTitle')
                         : $t('billing.billing.updateTitle')
                 }}
@@ -19,7 +19,7 @@
             <div class="col-md-4">
                 <BaseInputText
                     class="readonly-input-text"
-                    v-model:value="form.paymentTime"
+                    v-model:value="paymentTime"
                     :error="translateYupError(form.errors.paymentTime)"
                     :isReadonly="true"
                     :label="$t('billing.billing.billingForm.paymentTime')"
@@ -48,7 +48,7 @@
                 <BaseInputText
                     :class="!checkBillingWaitForPay ? 'readonly-input-text' : ''"
                     v-model:value="form.customerName"
-                    :error="translateYupError(form.errors.nameCustomer)"
+                    :error="translateYupError(form.errors.customerName)"
                     :isReadonly="!checkBillingWaitForPay"
                     :label="$t('billing.billing.billingForm.nameCustomer')"
                     :placeholder="$t('billing.billing.placeholder.nameCustomer')"
@@ -57,12 +57,11 @@
             <div class="col-md-4">
                 <BaseInputNumber
                     :class="!checkBillingWaitForPay ? 'readonly-input-text' : ''"
-                    name="phone"
                     v-model:value="form.customerPhone"
                     :isReadonly="!checkBillingWaitForPay"
                     :label="$t('billing.billing.billingForm.phone')"
                     :placeholder="$t('billing.billing.placeholder.phone')"
-                    :error="translateYupError(form.errors.phone)"
+                    :error="translateYupError(form.errors.customerPhone)"
                 />
             </div>
             <div class="col-md-4">
@@ -136,11 +135,18 @@ import { UtilMixins } from '@/mixins/utilMixins';
 import FoodBillingTable from '../components/FoodBillingTable.vue';
 import { parseLanguageSelectOptions } from '@/utils/helper';
 import { BillingStatus, IBillingUpdate } from '../types';
+import moment from 'moment-timezone';
 
 @Options({
     components: { FoodBillingTable },
 })
 export default class BillingFormPopup extends UtilMixins {
+    get paymentTime(): string {
+        return this.form.paymentTime
+            ? moment(this.form.paymentTime as string).format('YYYY-MM-DD HH:mm:ss')
+            : '';
+    }
+
     get checkBillingWaitForPay(): boolean {
         return (
             billingModule.selectedBilling?.billingStatus === BillingStatus.WAIT_FOR_PAY

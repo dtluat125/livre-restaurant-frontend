@@ -3,12 +3,13 @@ import i18n from '@/plugins/vue-i18n';
 import Papa from 'papaparse';
 import { ElMessageBox, ElNotification, MessageBoxData } from 'element-plus';
 import moment from 'moment';
-import { WeekDay } from '@/common/constants';
+import { BLOCK_TIME_BOOKING, WeekDay } from '@/common/constants';
 import isPlainObject from 'lodash/isPlainObject';
 import mapKeys from 'lodash/mapKeys';
 import trim from 'lodash/trim';
 import intersection from 'lodash/intersection';
 import { appService } from './app';
+import { IBooking } from '@/modules/booking/types';
 
 export function parseSelectOptions(options: ISelectOptions[]): ISelectOptions[] {
     return options.map((option: ISelectOptions) => ({
@@ -155,4 +156,33 @@ export function checkUserHasPermission(
 ): boolean {
     if (appService.getUser().isSuperAdmin) return true;
     return intersection(userPermissions, permissions).length > 0;
+}
+
+export function calculateDuration(loginAt: string, logoutAt: string): number {
+    const date1 = moment(loginAt);
+    const date2 = moment(logoutAt);
+    return date2.diff(date1, 'seconds');
+}
+
+export async function checkCanSetupTable(
+    timeArrival: Date,
+    bookings: IBooking[],
+    currentBookingId?: number,
+): Promise<boolean> {
+    return !bookings.some((item) => {
+        console.log(
+            calculateDuration(
+                new Date(timeArrival).toUTCString(),
+                item.arrivalTime.toUTCString(),
+            ),
+        );
+        return (
+            Math.abs(
+                calculateDuration(
+                    new Date(timeArrival).toUTCString(),
+                    item.arrivalTime.toUTCString(),
+                ),
+            ) < BLOCK_TIME_BOOKING && item.id !== currentBookingId
+        );
+    });
 }

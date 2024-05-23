@@ -45,7 +45,7 @@ export function initData() {
             nameCustomer: values.nameCustomer?.trim(),
             phone: values.phone,
             numberPeople: values.numberPeople,
-            arrivalTime: moment(values.arrivalTime).utc().fmFullTimeWithoutSecond(),
+            arrivalTime: moment(values.arrivalTime).toDate(),
             tableId: tableDiagramModule.tableSelected?.id,
             status: appModule.isGuestPage
                 ? BookingStatus.WAITING_FOR_APPROVE

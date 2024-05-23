@@ -112,7 +112,7 @@ export default class FilterForm extends mixins(BookingMixins) {
             keyword: this.filterForm.keyword?.trim(),
             arrivalTimeRange: this.arrivalTimeRange
                 ? (this.arrivalTimeRange as Date[]).map((date: Date) =>
-                      moment(date).utc().fmFullTimeWithoutSecond(),
+                      moment(date).format('YYYY-MM-DD HH:mm'),
                   )
                 : null,
             status: this.filterForm.status,

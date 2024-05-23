@@ -2,6 +2,7 @@
 import DraggableItem from './DraggableItem.vue';
 import TablesRestaurant from '../TablesRestaurants.vue';
 import { ITable } from '@/modules/table-diagram/types';
+import { toRefs } from 'vue';
 interface Props {
     table: ITable;
     isDraggable?: boolean;
@@ -12,6 +13,8 @@ const emit = defineEmits<{
 }>();
 
 const props = withDefaults(defineProps<Props>(), { table: {}, isDraggable: false });
+
+const { table, isDraggable } = toRefs(props);
 const onDragEnd = (coordinate) => {
     emit('drag-end', props.table?.id, coordinate);
     console.log(coordinate);

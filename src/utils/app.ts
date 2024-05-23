@@ -3,6 +3,7 @@ import { Storage } from './storage';
 import { isStringify } from './util';
 import { IUser } from '@/modules/user/types';
 import { PermissionResources } from '@/modules/role/constants';
+import { IUserProfile } from '../modules/auth/types';
 
 export enum AppEnum {
     USER = 'USER',
@@ -24,7 +25,7 @@ class AppService {
         return this.getLang() ? this.getLang() : defaultLang;
     }
 
-    setUser(user: null | IUser): void {
+    setUser(user: null | IUser | IUserProfile): void {
         if (!user) {
             this.storage.setLocalStorage(AppEnum.USER, '');
         }
@@ -61,7 +62,7 @@ class AppService {
     }
 
     getLang() {
-        return this.storage.getLocalStorage(AppEnum.LANG);
+        return this.storage.getLocalStorage(AppEnum.LANG) || defaultLang;
     }
 
     setLang(value: string) {
@@ -75,8 +76,8 @@ class AppService {
         // ex: ['user_login', 'user_create',...]
         const value =
             user?.role?.permissions
-                .filter((ele) => ele.resource.content === resource)
-                .map((ele) => ele.action.content) || [];
+                ?.filter((ele) => ele.resource.content === resource)
+                ?.map((ele) => ele.action.content) || [];
         value.forEach((ele) => {
             userPermissions.push(`${resource}_${ele}`);
         });

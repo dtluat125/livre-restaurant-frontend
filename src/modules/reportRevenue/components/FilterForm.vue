@@ -65,12 +65,17 @@
 
 <script lang="ts">
 import { Vue } from 'vue-class-component';
-import { DEFAULT_FIRST_PAGE, LIMIT_PER_PAGE } from '@/common/constants';
+import {
+    DEFAULT_FIRST_PAGE,
+    LIMIT_PER_PAGE,
+    TIMEZONE_NAME_DEFAULT,
+} from '@/common/constants';
 import { Prop, Watch } from 'vue-property-decorator';
 import { ElLoading } from 'element-plus';
 import { reportRevenueModule } from '../store';
 import { IQueryStringReportRevenue } from '../types';
-import moment from 'moment';
+import moment from 'moment-timezone';
+
 export default class FilterForm extends Vue {
     @Prop({ default: false }) readonly isToggleFilterForm!: boolean;
     @Prop({ default: '0' }) readonly currentTab!: string;
@@ -101,7 +106,7 @@ export default class FilterForm extends Vue {
             payerIds: this.filterForm.payerIds,
             dateRange: this.dateRange
                 ? (this.dateRange as Date[]).map((date: Date) =>
-                      moment(date).utc().fmFullTimeString(),
+                      moment.tz(date, TIMEZONE_NAME_DEFAULT).format('YYYY-MM-DD'),
                   )
                 : null,
         };

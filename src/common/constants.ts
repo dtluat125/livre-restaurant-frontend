@@ -4,11 +4,13 @@ export const GUEST_LAYOUT_NAME = 'GuestLayout';
 export const LOGIN_LAYOUT_NAME = 'LoginLayout';
 export const ERROR_LAYOUT_NAME = 'ErrorLayout';
 export const VAT_TAX_RATE = 0.08;
+export const BLOCK_TIME_BOOKING = 1800;
 
 export const INPUT_MONEY_MIN_VALUE = 0;
 
 // max size upload file 10 * 1024 * 1024 = 10485760
 export const MAX_SIZE_FILE = 10485760;
+export const TIMEZONE_NAME_DEFAULT = 'Asia/Bangkok';
 
 export const SidebarWidth = {
     expand: '230px',

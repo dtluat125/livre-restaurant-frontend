@@ -18,6 +18,7 @@ import {
     INPUT_URL_MAX_LENGTH,
     MIN_DATE_PICKER,
     SupportLanguage,
+    TIMEZONE_NAME_DEFAULT,
     VAT_TAX_RATE,
 } from '@/common/constants';
 import { appModule } from '@/store/app';
@@ -66,7 +67,8 @@ export class UtilMixins extends Vue {
                   i18nKey: string;
                   params?: Record<string, string>;
               }
-            | string,
+            | string
+            | undefined,
     ): string {
         if (typeof yupError === 'string') {
             return this.$t(yupError);
@@ -85,11 +87,12 @@ export class UtilMixins extends Vue {
     }
 
     parseDateTime(dateTime: Date | string, dateTimeFormat = 'YYYY-MM-DD'): string {
+        console.log(dateTime);
         if (!moment(dateTime).isValid) {
             return '';
         }
-        const currentLanguage = appModule.selectedLanguage as SupportLanguage;
-        return moment(dateTime).locale(currentLanguage).format(dateTimeFormat);
+        // const currentLanguage = appModule.selectedLanguage as SupportLanguage;
+        return moment(dateTime).tz(TIMEZONE_NAME_DEFAULT).format(dateTimeFormat);
     }
 
     getPositionOptions(userPositionList: IUserPosition[]): ISelectOptions[] {

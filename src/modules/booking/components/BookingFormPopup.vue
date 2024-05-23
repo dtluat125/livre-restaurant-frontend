@@ -50,7 +50,7 @@
                     :label="$t('booking.booking.bookingDialog.arrivalTime')"
                     :error="translateYupError(form.errors.arrivalTime)"
                     :is-required="true"
-                    :min-date="new Date()"
+                    :min-date="new Date().setDate(new Date().getDate() - 1)"
                     :default-value="minEndDate"
                     :type="'datetime'"
                     :date-format="YYYY_MM_DD_HYPHEN_HH_MM_COLON"

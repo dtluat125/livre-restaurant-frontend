@@ -17,11 +17,11 @@ import { IBillingUpdate, IBilling, BillingStatus } from '../types';
 export function initData() {
     const { t } = useI18n();
     const initValues = {
-        customerName: '',
-        customerPhone: '',
+        customerName: undefined,
+        customerPhone: undefined,
         paymentMethod: undefined,
         billingStatus: BillingStatus.WAIT_FOR_SELECT_FOOD,
-        paymentTime: '',
+        paymentTime: null as any,
         paymentTotal: 0,
         cashier: '',
         note: '',
@@ -34,11 +34,11 @@ export function initData() {
     const onSubmit = handleSubmit(async (values) => {
         const body = {
             customerName: values.customerName?.trim(),
-            customerPhone: values.customerPhone?.trim(),
+            customerPhone: values.customerPhone?.trim() || undefined,
             cashierId: appService.getUser().id,
             paymentTotal: billingModule.paymentTotal,
             paymentMethod: values.paymentMethod,
-            paymentTime: moment(new Date()).utc().fmFullTimeWithoutSecond(),
+            paymentTime: moment(new Date()).toDate(),
             billingStatus: BillingStatus.PAID,
             note: values.note?.trim(),
         } as IBillingUpdate;
@@ -99,10 +99,8 @@ export function initData() {
                     ? billingDetail.data?.cashier?.fullName
                     : appService.getUser().fullName,
                 paymentTime: billingDetail.data?.paymentTime
-                    ? moment(billingDetail.data?.paymentTime)
-                          .utc()
-                          .fmFullTimeWithoutSecond()
-                    : moment(new Date()).utc().fmFullTimeWithoutSecond(),
+                    ? moment(billingDetail.data?.paymentTime).toDate()
+                    : new Date(),
                 note: billingDetail.data?.note,
             },
         });

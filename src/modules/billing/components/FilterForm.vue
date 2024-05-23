@@ -57,7 +57,11 @@
 
 <script lang="ts">
 import { Vue } from 'vue-class-component';
-import { DEFAULT_FIRST_PAGE, LIMIT_PER_PAGE } from '@/common/constants';
+import {
+    DEFAULT_FIRST_PAGE,
+    LIMIT_PER_PAGE,
+    TIMEZONE_NAME_DEFAULT,
+} from '@/common/constants';
 import { Prop, Watch } from 'vue-property-decorator';
 import { ElLoading } from 'element-plus';
 import { billingModule } from '../store';
@@ -93,7 +97,7 @@ export default class FilterForm extends Vue {
             payerIds: this.filterForm.payerIds,
             paymentTimeRange: this.paymentTimeRange
                 ? (this.paymentTimeRange as Date[]).map((date: Date) =>
-                      moment(date).utc().fmFullTimeString(),
+                      moment.tz(date, TIMEZONE_NAME_DEFAULT).format('YYYY-MM-DD'),
                   )
                 : null,
         };

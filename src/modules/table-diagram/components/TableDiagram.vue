@@ -42,13 +42,6 @@
                             src="../../../assets/icons/table-diagram/window-icon.svg"
                         />
                     </div>
-                    <!-- <div class="p-10 list-table">
-                        <TablesRestaurants
-                            v-for="(table, index) in tableList"
-                            :key="index"
-                            :table="table"
-                        />
-                    </div> -->
                     <FloorPlan :tables="tableList" />
 
                     <div class="p-1 d-flex flex-column justify-content-around">
@@ -112,13 +105,7 @@
                             src="../../../assets/icons/table-diagram/window-icon.svg"
                         />
                     </div>
-                    <!-- <div class="p-10 floor-wrapper">
-                        <TablesRestaurants
-                            v-for="(table, index) in tableList"
-                            :key="index"
-                            :table="table"
-                        />
-                    </div> -->
+
                     <FloorPlan :tables="tableList" />
 
                     <div class="p-1 d-flex flex-column justify-content-around">
@@ -186,13 +173,7 @@
                             src="../../../assets/icons/table-diagram/plant-2.svg"
                         />
                     </div>
-                    <!-- <div class="p-10 floor-wrapper">
-                        <TablesRestaurants
-                            v-for="(table, index) in tableList"
-                            :key="index"
-                            :table="table"
-                        />
-                    </div> -->
+
                     <FloorPlan :tables="tableList" />
 
                     <div class="p-1 d-flex flex-column justify-content-around">
@@ -261,6 +242,7 @@ import FloorPlan from './floor-plan/Floor.vue';
 })
 export default class TableDiagramPage extends mixins(TableMixins) {
     get tableList(): ITable[] {
+        console.log(tableDiagramModule.tableList, 'tableList');
         return tableDiagramModule.tableList || [];
     }
 
@@ -277,6 +259,7 @@ export default class TableDiagramPage extends mixins(TableMixins) {
     }
 
     created(): void {
+        console.log('On mounted');
         tableDiagramModule.clearQueryString();
         if (
             !(
@@ -288,6 +271,16 @@ export default class TableDiagramPage extends mixins(TableMixins) {
             tableDiagramModule.setTableSelected(null);
         }
         this.getTableList();
+    }
+
+    beforeCreate(): void {
+        console.log('beforeCreate');
+        tableDiagramModule.clearQueryString();
+    }
+
+    beforeDestroy(): void {
+        console.log('beforeDestroy');
+        tableDiagramModule.clearQueryString();
     }
 
     async getTableList(): Promise<void> {
@@ -308,6 +301,9 @@ export default class TableDiagramPage extends mixins(TableMixins) {
 
     @Watch('tableSelected')
     async changeFloorTableSelected(): Promise<void> {
+        if (this.tableSelected === null) {
+            return;
+        }
         this.floor = this.tableSelected?.floor || FloorRestaurant.FIRST;
         tableDiagramModule.setTableQueryString({
             floor: this.floor,
@@ -378,10 +374,15 @@ export default class TableDiagramPage extends mixins(TableMixins) {
 }
 
 .floor-wrapper {
-    width: 100%;
-    margin: 50px;
-    background-color: white;
+    width: 1000px;
+    height: 600px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background-color: #e9e9e9;
     border: 1px solid #b3b3b3;
     border-radius: 10px;
+    position: relative;
 }
 </style>

@@ -9,6 +9,7 @@ export interface ITable {
     floor: FloorRestaurant;
     coordinateX: number;
     coordinateY: number;
+    bookingCount?: number;
 }
 
 export interface IGetTables {

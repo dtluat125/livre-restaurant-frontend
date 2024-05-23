@@ -22,10 +22,11 @@ const {
     width: boundsWidth,
     height: boundsHeight,
 } = useElementBounding(container);
+
 const { width, height } = useElementBounding(draggable);
 
-const adjustedLeft = ref(Number(props.initialX));
-const adjustedTop = ref(Number(props.initialY));
+const adjustedLeft = ref(Number(props.initialX) * (boundsWidth.value - width.value));
+const adjustedTop = ref(Number(props.initialY) * (boundsHeight.value - height.value));
 
 const emit = defineEmits<{
     (event: 'drag-end', endCoordinate: { x: number; y: number }): void;
@@ -45,10 +46,14 @@ const { x, y } = useDraggable(draggable, {
 });
 
 const boundedLeft = computed(() =>
-    clamp(0, adjustedLeft.value, boundsWidth.value - width.value),
+    props.isDraggable
+        ? clamp(0, adjustedLeft.value, boundsWidth.value - width.value)
+        : Number(props.initialX) * (boundsWidth.value - width.value),
 );
 const boundedTop = computed(() =>
-    clamp(0, adjustedTop.value, boundsHeight.value - height.value),
+    props.isDraggable
+        ? clamp(0, adjustedTop.value, boundsHeight.value - height.value)
+        : Number(props.initialY) * (boundsHeight.value - height.value),
 );
 
 const onDragOver = (a) => {
@@ -73,7 +78,6 @@ watchEffect(() => {
         shadow="~ hover:lg"
         class="table-item"
         :style="{
-            userSelect: 'none',
             top: `${boundedTop}px`,
             left: `${boundedLeft}px`,
             cursor: isDraggable ? 'grab' : 'pointer',

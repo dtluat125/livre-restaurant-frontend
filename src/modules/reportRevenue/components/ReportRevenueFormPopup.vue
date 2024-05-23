@@ -19,7 +19,12 @@
             <div class="col-md-2">
                 <BaseInputText
                     class="readonly-input-text"
-                    :value="parseDateTime(selectedReportRevenue.date, YYYY_MM_DD_HYPHEN)"
+                    :value="
+                        parseDateTime(
+                            selectedReportRevenue?.date || new Date(),
+                            DATE_TIME_FORMAT.YYYY_MM_DD_HYPHEN,
+                        )
+                    "
                     :isReadonly="true"
                     :label="$t('reportRevenue.reportRevenue.reportRevenueForm.date')"
                 />
@@ -210,7 +215,7 @@ import { parseLanguageSelectOptions } from '@/utils/helper';
 import { SHIFT_OPTIONS } from '../constants';
 import { appService } from '@/utils/app';
 import { IReportRevenueUpdateBody } from '../types';
-import { AcceptStatus } from '@/common/constants';
+import { AcceptStatus, DATE_TIME_FORMAT } from '@/common/constants';
 
 export default class ReportRevenueFormPopup extends UtilMixins {
     get selectedReportRevenue(): IReportRevenueUpdateBody | null {
