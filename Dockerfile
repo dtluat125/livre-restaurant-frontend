@@ -14,6 +14,9 @@
 
     COPY . .
 
+    RUN ls
+    RUN echo "ENV FILE CHECK"
+    RUN nano .env
     # Build the application.
     RUN npm run build
 
