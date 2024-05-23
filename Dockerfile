@@ -42,8 +42,6 @@
     # Expose the web server's port.
 
     FROM nginx:stable-alpine as production-stage
-    COPY --from=build /usr/src/app/dist /usr/share/nginx/html
-    EXPOSE 8080
-
-    # Run the application.
-    CMD ["nginx", "-g", "daemon off;"]
+    WORKDIR /usr/src/app
+    COPY --from=build /usr/src/app/dist /usr/src/app
+    COPY nginx.conf /etc/nginx/nginx.conf
