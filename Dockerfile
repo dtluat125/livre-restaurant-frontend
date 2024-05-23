@@ -13,10 +13,11 @@
     RUN yarn install
 
     COPY . .
+    RUN echo "Current directory" && pwd
 
-    RUN ls
+    RUN ls -la
     RUN echo "ENV FILE CHECK"
-    RUN nano .env
+    RUN cat .env
     # Build the application.
     RUN npm run build
 
