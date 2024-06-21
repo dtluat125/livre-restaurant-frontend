@@ -1,5 +1,10 @@
 import { BaseService } from './../../../utils/api';
-import { IRevenueChart, IUserTimeListQuery, IDashboardData } from './../types';
+import {
+    IRevenueChart,
+    IUserTimeListQuery,
+    IDashboardData,
+    IFoodRevenue,
+} from './../types';
 import service from '@/plugins/axios';
 import { IBodyResponse, IGetListResponse } from '@/common/types';
 
@@ -14,6 +19,13 @@ class DashboardService extends BaseService {
     getDashboardData(query: IUserTimeListQuery) {
         return this.client.get<void, IBodyResponse<IDashboardData>>(
             this.baseUrl + '/data',
+            { params: query },
+        );
+    }
+
+    getFoodRevenueData(query: IUserTimeListQuery) {
+        return this.client.get<void, IBodyResponse<IGetListResponse<IFoodRevenue>>>(
+            this.baseUrl + '/food',
             { params: query },
         );
     }

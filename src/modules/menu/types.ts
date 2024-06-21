@@ -25,6 +25,7 @@ export interface IFood {
     foodImgId?: number;
     foodImg?: IAvatar | null;
     categoryId?: number;
+    category?: ICategory;
 }
 
 export interface IFoodCreateBody {

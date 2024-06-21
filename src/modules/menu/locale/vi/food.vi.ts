@@ -21,6 +21,7 @@ export default {
             category: 'Danh mục',
             image: 'Hình ảnh',
             actions: 'Thao tác',
+            quantity: 'Số lượng',
         },
     },
 

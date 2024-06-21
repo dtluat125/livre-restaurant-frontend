@@ -1,97 +1,265 @@
 <template>
-    <div class="content-wrapper row">
-        <div class="col-md-4 timekeeping-card-container">
-            <div class="timekeeping-info">
-                <div class="icon-container working-hour">
-                    <MoneyIcon class="icon" />
-                </div>
-                <div class="detail">
-                    <h5 class="card-title">
-                        {{ $t('dashboard.dashboard.statisticalData.revenueTotal') }}
-                    </h5>
-                    <span>{{ parseMoney(dashboardData.revenueTotal) }}</span>
-                </div>
-            </div>
+    <div class="statistic-wrapper">
+        <el-button type="primary" @click="exportToPdf">
+            Print <el-icon class="el-icon--right"><Printer /></el-icon>
+        </el-button>
+        <div class="content-wrapper">
+            <BaseFilterFormLayout
+                @search="handleFilter"
+                @reset="resetFilter"
+                @keyup.enter="handleFilter"
+                :createButtonText="$t('user.filterForm.create')"
+                :isShowCreateButton="false"
+            >
+                <slot>
+                    <BaseSingleSelect
+                        v-model:value="filterForm.dateRangeType"
+                        :options="dateRangeTypeOptions"
+                        :clearable="false"
+                        :label="
+                            $t(
+                                'dashboard.dashboard.StatisticalChart.filterForm.revenue.dateRangeType.label',
+                            )
+                        "
+                        :placeholder="
+                            $t(
+                                'dashboard.dashboard.StatisticalChart.filterForm.revenue.dateRangeType.placeholder',
+                            )
+                        "
+                    />
+                    <BaseDatePicker
+                        v-model:value="filterForm.dateRange"
+                        :type="
+                            filterForm.dateRangeType === DateRangeTypes.MONTH
+                                ? 'year'
+                                : 'month'
+                        "
+                        :dateFormat="
+                            filterForm.dateRangeType === DateRangeTypes.MONTH
+                                ? DATE_TIME_FORMAT.YYYY
+                                : DATE_TIME_FORMAT.YYYY_MM_HYPHEN
+                        "
+                        :clearable="false"
+                        :label="
+                            $t(
+                                'dashboard.dashboard.StatisticalChart.filterForm.revenue.dateRange.label',
+                            )
+                        "
+                        :placeholder="
+                            $t(
+                                'dashboard.dashboard.StatisticalChart.filterForm.revenue.dateRange.placeholder',
+                            )
+                        "
+                    />
+                </slot>
+            </BaseFilterFormLayout>
+        </div>
+        <div class="content-wrapper row revenue-card">
+            <RevenueCard :dashboardData="dashboardData" />
+        </div>
+        <div class="content-wrapper revenue-chart">
+            <RevenueChart :filterForm="finalFilterForm" />
         </div>
 
-        <div class="col-md-4 timekeeping-card-container">
-            <div class="timekeeping-info">
-                <div class="icon-container working-hour">
-                    <ListIcon class="icon" />
-                </div>
-                <div class="detail">
-                    <h5 class="card-title">
-                        {{ $t('dashboard.dashboard.statisticalData.billingCount') }}
-                    </h5>
-                    <span>{{ dashboardData.billingCount }}</span>
-                </div>
-            </div>
+        <div class="content-wrapper food-table">
+            <FoodRevenueTable :foodList="foodList" />
         </div>
-    </div>
-    <div class="content-wrapper">
-        <RevenueChart />
     </div>
 </template>
 
-<script lang="ts">
-import { mixins, Options } from 'vue-class-component';
+<script setup lang="ts">
+import { ref, reactive, onMounted, computed } from 'vue';
 import RevenueChart from '../components/RevenueChart.vue';
-import {
-    Lock as LockIcon,
-    Money as MoneyIcon,
-    List as ListIcon,
-} from '@element-plus/icons-vue';
+import { Printer } from '@element-plus/icons-vue';
 import { ElLoading } from 'element-plus';
 import { throttle } from 'lodash';
-import { DateRangeTypes } from '../constant';
+import { DateRangeTypeOptions, DateRangeTypes } from '../constant';
 import { dashboardService } from '../services/api.services';
 import { DATE_TIME_FORMAT } from '@/common/constants';
 import moment from 'moment';
-import { IDashboardData } from '../types';
-import { UtilMixins } from '@/mixins/utilMixins';
-@Options({
-    components: { RevenueChart, LockIcon, MoneyIcon, ListIcon },
-})
-export default class DashboardPage extends mixins(UtilMixins) {
-    throttled = throttle(this.createChart, 2000, { trailing: false });
-    initData: IDashboardData = {
-        billingCount: 0,
-        revenueTotal: 0,
+import { IDashboardData, IFoodRevenue } from '../types';
+import FoodRevenueTable from '@/modules/dashboard/components/FoodRevenueTable.vue';
+import RevenueCard from '@/modules/dashboard/components/RevenueCard.vue';
+import { ISelectOptions } from '@/common/types';
+import { parseLanguageSelectOptions } from '@/utils/helper';
+import { getDateRanges } from '../utils';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { parseMoney } from '@/utils/util';
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+// Define reactive state
+const dashboardData = reactive<IDashboardData>({
+    billingCount: 0,
+    revenueTotal: 0,
+});
+
+const foodList = ref<IFoodRevenue[]>([]);
+
+const chartImage = ref('');
+
+const filterForm = reactive({
+    dateRangeType: DateRangeTypes.MONTH,
+    dateRange: moment().format(DATE_TIME_FORMAT.YYYY_MM_DD_HYPHEN_HH_MM_SS_COLON),
+});
+
+const finalFilterForm = reactive<any>({
+    dateRangeType: DateRangeTypes.MONTH,
+    dateRange: moment().format(DATE_TIME_FORMAT.YYYY_MM_DD_HYPHEN_HH_MM_SS_COLON),
+});
+
+const throttledCreateChart = throttle(createChart, 2000, { trailing: false });
+
+async function createChart() {
+    const cardLoading = ElLoading.service({ target: '.revenue-card' });
+    const chartLoading = ElLoading.service({ target: '.revenue-chart' });
+    const tableLoading = ElLoading.service({ target: '.food-table' });
+
+    finalFilterForm.dateRangeType = filterForm.dateRangeType;
+    finalFilterForm.dateRange = filterForm.dateRange;
+
+    const dateRanges = getDateRanges(filterForm) || [
+        moment(new Date())
+            .startOf('month')
+            .format(DATE_TIME_FORMAT.YYYY_MM_DD_HYPHEN_HH_MM_SS_COLON),
+        moment(new Date())
+            .endOf('month')
+            .format(DATE_TIME_FORMAT.YYYY_MM_DD_HYPHEN_HH_MM_SS_COLON),
+    ];
+
+    const revenueResponse = await dashboardService.getDashboardData({
+        dateRangeType: DateRangeTypes.MONTH,
+        dateRanges,
+    });
+    const foodRevenueResponse = await dashboardService.getFoodRevenueData({
+        dateRangeType: DateRangeTypes.MONTH,
+        dateRanges,
+    });
+
+    if (foodRevenueResponse.success) {
+        foodList.value = foodRevenueResponse.data?.items;
+    }
+
+    if (revenueResponse.success) {
+        Object.assign(dashboardData, revenueResponse.data);
+    } else {
+        Object.assign(dashboardData, {
+            billingCount: 0,
+            revenueTotal: 0,
+        });
+    }
+
+    cardLoading.close();
+    chartLoading.close();
+    tableLoading.close();
+    const chart = document.getElementById('chart') as any;
+    console.log(chart);
+    setTimeout(() => {
+        chartImage.value = chart.toDataURL();
+    }, 200); // Timeout to ensure chart has rendered
+}
+
+async function handleFilter() {
+    await throttledCreateChart();
+}
+
+const dateRangeTypeOptions = computed<ISelectOptions[]>(() =>
+    parseLanguageSelectOptions(DateRangeTypeOptions),
+);
+
+async function resetFilter() {
+    filterForm.dateRangeType = DateRangeTypes.MONTH;
+    filterForm.dateRange = moment().format(
+        DATE_TIME_FORMAT.YYYY_MM_DD_HYPHEN_HH_MM_SS_COLON,
+    );
+    finalFilterForm.value = filterForm;
+    await throttledCreateChart();
+}
+
+async function exportToPdf() {
+    const docDefinition = {
+        content: [
+            {
+                text: `Livre Restaurant Report for ${
+                    filterForm.dateRangeType === DateRangeTypes.MONTH ? 'year' : 'month'
+                } ${moment(filterForm.dateRange).get(
+                    filterForm.dateRangeType === DateRangeTypes.MONTH ? 'year' : 'month',
+                )}`,
+                style: 'header',
+            },
+            {
+                text: `Revenue: ${parseMoney(dashboardData.revenueTotal)}`,
+                style: 'subheader',
+            },
+            { text: `Total Bills: ${dashboardData.billingCount}`, style: 'subheader' },
+
+            { text: 'Statistics Chart:', style: 'subheader' },
+            { image: chartImage.value, width: 400, height: 200, style: 'image' },
+
+            { text: 'Food Revenue:', style: 'subheader' },
+            {
+                table: {
+                    headerRows: 1,
+                    widths: ['auto', '*', 'auto', '*', 'auto'],
+                    body: [
+                        [
+                            { text: 'ID', style: 'tableHeader' },
+                            { text: 'Name', style: 'tableHeader' },
+                            { text: 'Price', style: 'tableHeader' },
+                            { text: 'Category', style: 'tableHeader' },
+                            { text: 'Quantity Sold', style: 'tableHeader' },
+                        ],
+                        ...foodList.value.map((item) => [
+                            item.id,
+                            item.foodName,
+                            parseMoney(item.price),
+                            item.category?.name,
+                            item.quantity,
+                        ]),
+                    ],
+                },
+                layout: 'lightHorizontalLines',
+            },
+        ],
+        styles: {
+            header: {
+                fontSize: 20,
+                bold: true,
+                marginBottom: 15,
+                alignment: 'center',
+            },
+            subheader: {
+                fontSize: 16,
+                bold: true,
+                marginTop: 10,
+                marginBottom: 10,
+            },
+            tableHeader: {
+                bold: true,
+                fontSize: 13,
+                color: 'white',
+                fillColor: '#4CAF50',
+                alignment: 'center',
+            },
+            image: {
+                margin: [0, 10, 0, 10],
+                alignment: 'center',
+            },
+        },
+        defaultStyle: {
+            fontSize: 12,
+            columnGap: 20,
+        },
     };
 
-    dashboardData = this.initData;
-
-    async createChart() {
-        const loading = ElLoading.service({
-            target: '.support-request-category-chart',
-        });
-
-        const dateRanges = [
-            moment(new Date())
-                .startOf('month')
-                .format(DATE_TIME_FORMAT.YYYY_MM_DD_HYPHEN_HH_MM_SS_COLON),
-            moment(new Date())
-                .endOf('month')
-                .format(DATE_TIME_FORMAT.YYYY_MM_DD_HYPHEN_HH_MM_SS_COLON),
-        ];
-
-        const response = await dashboardService.getDashboardData({
-            dateRangeType: DateRangeTypes.MONTH,
-            dateRanges,
-        });
-
-        if (response.success) {
-            this.dashboardData = response.data;
-        } else {
-            this.dashboardData = this.initData;
-        }
-        loading.close();
-    }
-
-    async created() {
-        await this.createChart();
-    }
+    pdfMake.createPdf(docDefinition).open();
+    // .download(`Livre_Restaurant_Report_${filterForm.dateRange}.pdf`);
 }
+
+onMounted(() => {
+    createChart();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -111,44 +279,5 @@ export default class DashboardPage extends mixins(UtilMixins) {
 }
 :deep(.form-group) {
     margin-bottom: 10px;
-}
-.timekeeping-card-container {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-}
-.timekeeping-info {
-    padding: 20px 12px;
-    border-radius: 10px;
-    position: relative;
-    display: flex;
-    gap: 10px;
-    text-align: left;
-    background-color: $--color-gray-200;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    align-items: center;
-    .icon-container {
-        padding: 5px;
-        border-radius: 10px;
-        .icon {
-            width: 32px;
-            height: 32px;
-        }
-    }
-    .detail {
-        h5 {
-            font-weight: 600;
-        }
-        span {
-            font-weight: 500;
-        }
-    }
-    @media only screen and (max-width: 1399.99px) {
-        padding: 30px 12px;
-    }
-}
-
-.working-hour {
-    background-color: #e0e8f3;
-    color: #1a55af;
 }
 </style>

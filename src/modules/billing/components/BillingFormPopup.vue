@@ -84,10 +84,10 @@
             <div class="col-md-2 text-end">
                 {{ parseMoney(totalFoodPrice) }}
             </div>
-            <div class="col-md-10 text-end font-weight-bold">
+            <!-- <div class="col-md-10 text-end font-weight-bold">
                 {{ $t('billing.billing.billingForm.vat') }}
             </div>
-            <div class="col-md-2 text-end">+&nbsp;{{ parseMoney(vat) }}</div>
+            <div class="col-md-2 text-end">+&nbsp;{{ parseMoney(vat) }}</div> -->
             <div class="col-md-10 text-end font-weight-bold">
                 {{ $t('billing.billing.billingForm.promotion') }}
             </div>

@@ -87,11 +87,11 @@ export class UtilMixins extends Vue {
     }
 
     parseDateTime(dateTime: Date | string, dateTimeFormat = 'YYYY-MM-DD'): string {
-        console.log(dateTime);
         if (!moment(dateTime).isValid) {
             return '';
         }
         // const currentLanguage = appModule.selectedLanguage as SupportLanguage;
+        console.log(dateTime, 'dateTime');
         return moment(dateTime).tz(TIMEZONE_NAME_DEFAULT).format(dateTimeFormat);
     }
 
@@ -110,6 +110,6 @@ export class UtilMixins extends Vue {
     }
 
     calculatePriceIncludeTax(price: number): number {
-        return Math.round(price + this.calculateVAT(price));
+        return Math.round(price);
     }
 }

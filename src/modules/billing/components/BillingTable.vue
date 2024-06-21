@@ -8,6 +8,11 @@
     >
         <template #table-columns>
             <el-table-column
+                prop="id"
+                min-width="200"
+                :label="$t('billing.billing.billingTable.trace')"
+            />
+            <el-table-column
                 prop="customerName"
                 min-width="200"
                 :label="$t('billing.billing.billingTable.customerName')"
@@ -45,7 +50,7 @@
                         scope.row.paymentTime
                             ? parseDateTime(
                                   scope.row.paymentTime,
-                                  YYYY_MM_DD_HYPHEN_HH_MM_COLON,
+                                  DATE_TIME_FORMAT.YYYY_MM_DD_HYPHEN_HH_MM_COLON,
                               )
                             : ''
                     }}
@@ -92,100 +97,228 @@
                                 <EditIcon class="action-icon" />
                             </el-button>
                         </el-tooltip>
+                        <el-tooltip
+                            effect="dark"
+                            :content="$t('billing.billing.tooltip.export')"
+                            placement="top"
+                            v-if="isCanExport(scope.row)"
+                        >
+                            <el-button
+                                type="primary"
+                                size="mini"
+                                :loading="
+                                    scope.row.id === billingModule.selectedBilling?.id &&
+                                    isExporting
+                                "
+                                @click="onClickButtonExport(scope.row)"
+                            >
+                                <el-icon class="el-icon--right"><Printer /></el-icon>
+                            </el-button>
+                        </el-tooltip>
                     </div>
                 </template>
             </el-table-column>
         </template>
     </BaseTableLayout>
 </template>
-
-<script lang="ts">
-import { Options } from 'vue-class-component';
-import { mixins } from 'vue-property-decorator';
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
 import { billingModule } from '@billing/store';
-import { IBilling, IBillingUpdate, BillingStatus } from '../types';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@element-plus/icons-vue';
+import { IBillingUpdate, BillingStatus, IBilling } from '../types';
+import { Edit as EditIcon, Printer } from '@element-plus/icons-vue';
 import { PermissionActions, PermissionResources } from '@/modules/role/constants';
 import { checkUserHasPermission } from '@/utils/helper';
-import { UtilMixins } from '@/mixins/utilMixins';
 import { ElLoading } from 'element-plus';
-import { DEFAULT_FIRST_PAGE } from '@/common/constants';
+import { DATE_TIME_FORMAT, DEFAULT_FIRST_PAGE } from '@/common/constants';
+import { parseDateTime, parseMoney } from '../../../utils/util';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 
-@Options({
-    components: {
-        DeleteIcon,
-        EditIcon,
-    },
-})
-export default class BillingTable extends mixins(UtilMixins) {
-    get billingList(): IBilling[] {
-        return billingModule.billingList;
-    }
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-    get totalItems(): number {
-        return billingModule.totalBillings;
-    }
+const billingList = computed(() => billingModule.billingList);
+const totalItems = computed(() => billingModule.totalBillings);
+const selectedPage = ref(billingModule.billingQueryString?.page || DEFAULT_FIRST_PAGE);
 
-    get selectedPage(): number {
-        return billingModule.billingQueryString?.page || DEFAULT_FIRST_PAGE;
-    }
+const isCanUpdate = computed(() =>
+    checkUserHasPermission(billingModule.userPermissions, [
+        `${PermissionResources.BILLING}_${PermissionActions.UPDATE}`,
+    ]),
+);
 
-    set selectedPage(value: number) {
-        billingModule.billingQueryString.page = value;
-    }
+const isCanExport = (billing: IBilling) => {
+    return [BillingStatus.WAIT_FOR_PAY, BillingStatus.PAID].includes(
+        billing.billingStatus,
+    );
+};
 
-    get isCanDelete(): boolean {
-        return checkUserHasPermission(billingModule.userPermissions, [
-            `${PermissionResources.BILLING}_${PermissionActions.DELETE}`,
-        ]);
-    }
+const onClickButtonEdit = async (updateBilling: IBillingUpdate): Promise<void> => {
+    billingModule.setSelectedBilling(updateBilling);
+    billingModule.setIsShowBillingFormPopUp(true);
+};
 
-    get isCanUpdate(): boolean {
-        return checkUserHasPermission(billingModule.userPermissions, [
-            `${PermissionResources.BILLING}_${PermissionActions.UPDATE}`,
-        ]);
+const statusBadge = (status: BillingStatus): string => {
+    switch (status) {
+        case BillingStatus.EATING:
+            return 'warning';
+        case BillingStatus.WAIT_FOR_PAY:
+        case BillingStatus.WAIT_FOR_SELECT_FOOD:
+            return 'info';
+        case BillingStatus.PAID:
+            return 'success';
+        case BillingStatus.CANCELED:
+            return 'danger';
     }
+};
 
-    async onClickButtonEdit(updateBilling: IBillingUpdate): Promise<void> {
-        billingModule.setSelectedBilling(updateBilling);
-        billingModule.setIsShowBillingFormPopUp(true);
-    }
+const getBillingList = async (): Promise<void> => {
+    const loading = ElLoading.service({
+        target: '.content',
+    });
+    await billingModule.getBillingList();
+    loading.close();
+};
 
-    statusBadge(status: BillingStatus): string {
-        switch (status) {
-            case BillingStatus.EATING:
-                return 'warning';
-            case BillingStatus.WAIT_FOR_PAY:
-            case BillingStatus.WAIT_FOR_SELECT_FOOD:
-                return 'info';
-            case BillingStatus.PAID:
-                return 'success';
-            case BillingStatus.CANCELED:
-                return 'danger';
-        }
-    }
+const handlePaginate = async (): Promise<void> => {
+    billingModule.setBillingQueryString({
+        page: selectedPage.value,
+    });
+    await getBillingList();
+};
 
-    async getBillingList(): Promise<void> {
-        const loading = ElLoading.service({
-            target: '.content',
-        });
-        await billingModule.getBillingList();
-        loading.close();
-    }
+const onClickButtonExport = async (billing: IBilling) => {
+    billingModule.setSelectedBilling(billing);
+    isExporting.value = true;
+    await billingModule.getFoodBillingList();
+    exportToPDF(billing);
+    isExporting.value = false;
+};
 
-    async handlePaginate(): Promise<void> {
-        billingModule.setBillingQueryString({
-            page: this.selectedPage,
-        });
-        this.getBillingList();
-    }
-}
+const isExporting = ref(false);
+
+const exportToPDF = (billing: IBilling) => {
+    const restaurantName = 'Livre Restaurant';
+    const restaurantAddress = '123 Gourmet St, Food City, FC 12345';
+
+    const docDefinition = {
+        content: [
+            { text: restaurantName, style: 'header', alignment: 'center' },
+            { text: restaurantAddress, style: 'subheader', alignment: 'center' },
+            { text: 'Invoice', style: 'invoiceTitle', margin: [0, 20, 0, 20] },
+            {
+                columns: [
+                    {
+                        width: '50%',
+                        text: [
+                            { text: 'Invoice ID: ', bold: true },
+                            billing.id,
+                            '\n',
+                            billing.customerName && {
+                                text: 'Customer Name: ',
+                                bold: true,
+                            },
+                            billing.customerName,
+                            '\n',
+                            billing.customerPhone && {
+                                text: 'Customer Phone: ',
+                                bold: true,
+                            },
+                            billing.customerPhone,
+                            '\n',
+                            { text: 'Date: ', bold: true },
+                            new Date(billing.paymentTime).toLocaleDateString(),
+                            '\n',
+                        ],
+                    },
+                ],
+            },
+            { text: ' ', margin: [0, 10, 0, 10] },
+            {
+                table: {
+                    headerRows: 1,
+                    widths: ['*', 'auto', 'auto', 'auto'],
+                    body: [
+                        [
+                            { text: 'Description', style: 'tableHeader' },
+                            { text: 'Quantity', style: 'tableHeader' },
+                            { text: 'Price', style: 'tableHeader' },
+                            { text: 'Total', style: 'tableHeader' },
+                        ],
+                        ...billingModule.foodBillingList.map((item) => [
+                            item.food?.foodName,
+                            item.quantity,
+                            parseMoney(item.food?.price),
+                            parseMoney(item.quantity * item.food?.price),
+                        ]),
+                        [
+                            {
+                                text: 'Total',
+                                colSpan: 3,
+                                alignment: 'right',
+                                style: 'tableTotal',
+                            },
+                            {},
+                            {},
+                            {
+                                text: parseMoney(billing.paymentTotal),
+                                style: 'tableTotal',
+                            },
+                        ],
+                    ],
+                },
+                layout: 'lightHorizontalLines',
+            },
+            { text: ' ', margin: [0, 10, 0, 10] },
+            {
+                text: 'Thank you for dining with us!',
+                style: 'footer',
+                alignment: 'center',
+            },
+        ],
+        styles: {
+            header: {
+                fontSize: 22,
+                bold: true,
+                margin: [0, 0, 0, 5],
+            },
+            subheader: {
+                fontSize: 14,
+                margin: [0, 0, 0, 5],
+            },
+            invoiceTitle: {
+                fontSize: 18,
+                bold: true,
+                alignment: 'center',
+            },
+            tableHeader: {
+                bold: true,
+                fontSize: 13,
+                color: 'black',
+            },
+            tableTotal: {
+                bold: true,
+                fontSize: 13,
+                color: 'black',
+            },
+            footer: {
+                fontSize: 14,
+                bold: true,
+            },
+        },
+        defaultStyle: {
+            fontSize: 12,
+            columnGap: 20,
+        },
+    };
+    pdfMake.createPdf(docDefinition).open();
+};
+onMounted(() => {
+    getBillingList();
+});
 </script>
-
 <style lang="scss" scoped>
 .button-group {
     display: flex;
-    justify-content: space-around;
     flex-wrap: nowrap;
 }
 

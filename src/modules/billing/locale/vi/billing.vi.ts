@@ -3,6 +3,7 @@ export default {
     detailTitle: 'Chi tiết hóa đơn',
 
     billingTable: {
+        trace: 'Mã hóa đơn', // 'Mã hóa đơn
         customerName: 'Tên khách hàng',
         customerPhone: 'Số điện thoại',
         paymentTotal: 'Tổng thanh toán',
@@ -52,6 +53,7 @@ export default {
     tooltip: {
         edit: 'Chỉnh sửa',
         delete: 'Xóa',
+        export: 'Xuất',
     },
     filterForm: {
         createdAt: 'Ngày tạo',

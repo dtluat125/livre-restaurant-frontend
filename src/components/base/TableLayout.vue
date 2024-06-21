@@ -83,6 +83,11 @@ export default class TableLayout extends Vue {
         this.currentPage = 1;
     }
 
+    @Watch('data')
+    onChangeDataa() {
+        console.log('data changed', this.data);
+    }
+
     get totalPages() {
         return Math.ceil(this.totalItems / this.pageSize);
     }

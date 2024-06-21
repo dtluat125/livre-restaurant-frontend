@@ -21,6 +21,7 @@ export default {
             category: 'Category',
             image: 'Image',
             actions: 'Actions',
+            quantity: 'Quantity',
         },
     },
 

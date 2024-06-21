@@ -3,6 +3,7 @@ export default {
     detailTitle: 'Detail billing',
 
     billingTable: {
+        trace: 'Billing code',
         customerName: 'Customer name',
         customerPhone: 'Customer phone',
         table: 'Table',
@@ -53,6 +54,7 @@ export default {
     tooltip: {
         edit: 'Edit',
         delete: 'Delete',
+        export: 'Export',
     },
     filterForm: {
         createdAt: 'Created at',
